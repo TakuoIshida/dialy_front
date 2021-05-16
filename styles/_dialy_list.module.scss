@@ -1,0 +1,18 @@
+.dialyList {
+  &__new {
+    align-items: center;
+    margin: 20px auto;
+    text-align: center;
+  }
+  &__dataGrid {
+    align-items: center;
+    margin: 20px auto;
+    width: 80%;
+  }
+  &__nodata {
+    text-align: center;
+  }
+  // &__divider {
+  //   margin: auto;
+  // }
+}
