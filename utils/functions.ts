@@ -1,17 +1,18 @@
-import { GetApiResponse, PutApiResponse, TodoType } from '@/types/type'
+import { GetApiResponse, PutApiResponse, DialyType } from '@/types/type'
 
-export const getTodos = async (url: string) => {
+export const getDialy = async (url: string) => {
   const data: GetApiResponse = await fetch(url).then(res => res.json())
   return data
 }
 
-export const postTodo = async (url: string, todo?: TodoType) => {
-  const config = {
+export const postDialy = async (url: string, dialy?: DialyType) => {
+  const config: RequestInit = {
     method: 'PUT',
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(todo),
+    body: JSON.stringify(dialy),
   }
   const data: PutApiResponse = await fetch(url, config).then(res => res.json())
   return data
@@ -25,8 +26,9 @@ export const comprehendApiReq = async (content: string) => {
   const param: InputText = {
     inputText: content,
   }
-  const config = {
+  const config: RequestInit = {
     method: 'POST',
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },

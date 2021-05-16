@@ -1,15 +1,15 @@
-import TodoList from '@/components/TodoList'
+import DialyList from '@/components/DialyList'
 import { GetApiResponse, IProps } from '@/types/type'
-import { getTodos } from '@/utils/functions'
+import { getDialy } from '@/utils/functions'
 import { Button, Divider } from '@material-ui/core'
 import Link from 'next/link'
 import React from 'react'
 // eslint-disable-next-line no-restricted-imports
-import style from '../styles/_todolist.module.scss'
+import style from '../styles/_dialy_list.module.scss'
 // レンダリングするTopのコンポネントでAPIフェッチする必要がある
 export async function getStaticProps() {
-  const data: GetApiResponse = await getTodos(
-    process.env.NEXT_PUBLIC_BASE_API + '/todos',
+  const data: GetApiResponse = await getDialy(
+    process.env.NEXT_PUBLIC_BASE_API + '/dialy',
   )
   return {
     props: { data },
@@ -17,17 +17,23 @@ export async function getStaticProps() {
 }
 
 const TopPage: React.FC<IProps> = (props: IProps) => {
+  console.log(props)
+
   return (
     <div>
-      <div className={style.todoList__new}>
-        <Link href="/createtodo" passHref>
+      <div className={style.dialyList__new}>
+        <Link href="/createDialy" passHref>
           <Button variant="contained" color="secondary">
             新規作成
           </Button>
         </Link>
       </div>
-      <Divider className={style.todoList__divider} />
-      <TodoList data={props.data} />
+      <Divider className={style.dialyList__divider} />
+      {props.data.result.length > 0 ? (
+        <DialyList data={props.data} />
+      ) : (
+        <p className={style.dialyList__nodata}>入力はありません</p>
+      )}
     </div>
   )
 }
