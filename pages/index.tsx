@@ -7,7 +7,8 @@ import React from 'react'
 // eslint-disable-next-line no-restricted-imports
 import style from '../styles/_dialy_list.module.scss'
 // レンダリングするTopのコンポネントでAPIフェッチする必要がある
-export async function getStaticProps() {
+// export async function getStaticProps() {
+export async function getServerSideProps() {
   const data: GetApiResponse = await getDialy(
     process.env.NEXT_PUBLIC_BASE_API + '/dialy',
   )
