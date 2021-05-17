@@ -19,6 +19,8 @@ export async function getStaticProps() {
 }
 
 const TopPage: React.FC<IProps> = (props: IProps) => {
+  console.log(props.dialyList)
+
   return (
     <div>
       <div className={style.dialyList__new}>
