@@ -1,5 +1,5 @@
 import BackToTop from '@/components/BackToTop'
-import { TodoType } from '@/types/type'
+import { DialyType } from '@/types/type'
 import {
   Button,
   Checkbox,
@@ -8,18 +8,22 @@ import {
 } from '@material-ui/core'
 import React, { useState } from 'react'
 // eslint-disable-next-line no-restricted-imports
-import style from '../styles/_todo_form.module.scss'
+import style from '../styles/_dialy_form.module.scss'
 
 // 各Todoの編集・更新画面
 const EditTodo = () => {
-  const initialEditTodo: TodoType = {
+  const initialEditDialy: DialyType = {
     id: '',
     title: '',
     content: '',
+    positiveSentiment: 0,
+    negativeSentiment: 0,
+    nutralSentiment: 0,
+    mixedSentiment: 0,
     isDeleted: false,
   }
   // storeからeditする対象のtodoを取得
-  const [editState, setEditState] = useState(initialEditTodo)
+  const [editState, setEditState] = useState(initialEditDialy)
 
   const handleTitleChange = (value: string) => {
     setEditState({ ...editState, ['title']: value })
@@ -33,15 +37,15 @@ const EditTodo = () => {
   }
 
   return (
-    <div className={style.todoForm}>
+    <div className={style.dialyForm}>
       <TextField
-        className={style.todoForm__title}
+        className={style.dialyForm__title}
         label="タイトル"
         variant="outlined"
         onChange={event => handleTitleChange(event.target.value)}
       />
       <TextField
-        className={style.todoForm__content}
+        className={style.dialyForm__content}
         label="内容"
         multiline
         variant="outlined"
@@ -63,7 +67,7 @@ const EditTodo = () => {
 
       <div>
         <Button
-          className={style.todoForm__put}
+          className={style.dialyForm__put}
           variant="contained"
           color="primary">
           更新

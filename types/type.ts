@@ -7,6 +7,7 @@ export type DialyType = {
   nutralSentiment: number
   mixedSentiment: number
   isDeleted: boolean
+  sentimentResult?: 'positive' | 'negative' | 'nutral'
   //   created_at: string
   //   updated_at: string
 }
@@ -18,7 +19,7 @@ export type confirmType = {
 export type DialyListType = DialyType[]
 
 export interface IProps {
-  data: GetApiResponse
+  dialyList: DialyListType
 }
 
 export interface IDialyInputEvent extends React.FormEvent<HTMLInputElement> {
@@ -43,4 +44,14 @@ export type PutApiResponse = {
   status: number
   message: string
   result: DialyType
+}
+
+export type ComprehendResponse = {
+  statusCode: number
+  sentimentScore: {
+    Mixed: number
+    Negative: number
+    Neutral: number
+    Positive: number
+  }
 }

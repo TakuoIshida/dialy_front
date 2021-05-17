@@ -1,4 +1,9 @@
-import { GetApiResponse, PutApiResponse, DialyType } from '@/types/type'
+import {
+  DialyListType,
+  DialyType,
+  GetApiResponse,
+  PutApiResponse
+} from '@/types/type'
 
 export const getDialy = async (url: string) => {
   const data: GetApiResponse = await fetch(url).then(res => res.json())
@@ -39,4 +44,28 @@ export const comprehendApiReq = async (content: string) => {
     config,
   ).then(res => res.json())
   return data
+}
+
+export function judgeOwnSentiment(dialyList: DialyListType): DialyListType {
+  for (const dialyItem of dialyList) {
+    // positive  > 0.5 && negative < 0.5 ==> positive
+    if (
+      dialyItem.positiveSentiment > 0.5 &&
+      dialyItem.negativeSentiment < 0.5
+    ) {
+      dialyItem.sentimentResult = 'positive'
+      continue
+    }
+    // positive  < 0.5 && negative > 0.5 ==> negative
+    if (
+      dialyItem.positiveSentiment < 0.5 &&
+      dialyItem.negativeSentiment > 0.5
+    ) {
+      dialyItem.sentimentResult = 'negative'
+      continue
+    }
+    // other nutral
+    dialyItem.sentimentResult = 'nutral'
+  }
+  return dialyList
 }

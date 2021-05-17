@@ -1,5 +1,5 @@
 import BackToTop from '@/components/BackToTop'
-import { PutApiResponse, DialyType } from '@/types/type'
+import { PutApiResponse, DialyType, ComprehendResponse } from '@/types/type'
 import { comprehendApiReq, postDialy } from '@/utils/functions'
 import {
   Button,
@@ -36,12 +36,19 @@ const NewTodo = () => {
   }
 
   const putTodo = async (newDialy: DialyType) => {
+    if (newDialy.content === '' || newDialy.title === '') {
+      alert('入力がありません')
+      return
+    }
     try {
-      const res = await comprehendApiReq(newDialy.content)
+      const res: ComprehendResponse = await comprehendApiReq(newDialy.content)
       console.log(res)
       // POSTする前にComprehendを入れてレスポンスの点数を受け取る
-      // 点数を基に感情を４パターンに分ける
       // ４パターンに分けた結果をnewDialyに追加する
+      newDialy.mixedSentiment = res.sentimentScore.Mixed
+      newDialy.negativeSentiment = res.sentimentScore.Negative
+      newDialy.nutralSentiment = res.sentimentScore.Neutral
+      newDialy.positiveSentiment = res.sentimentScore.Positive
       const data: PutApiResponse = await postDialy(
         process.env.NEXT_PUBLIC_BASE_API + '/dialy',
         newDialy,
@@ -50,6 +57,7 @@ const NewTodo = () => {
       setNewDialy(initialNewDialy)
     } catch (e) {
       console.log(e)
+      alert('登録に失敗しました。')
       return
     }
   }

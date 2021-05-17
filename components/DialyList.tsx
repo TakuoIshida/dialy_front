@@ -7,7 +7,7 @@ import style from '../styles/_dialy_list.module.scss'
 
 const DialyList: React.FC<IProps> = (props: IProps) => {
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'No', width: 100, disableColumnMenu: true },
+    { field: 'id', headerName: 'No', width: 75, disableColumnMenu: true },
     {
       field: 'title',
       width: 250,
@@ -17,17 +17,23 @@ const DialyList: React.FC<IProps> = (props: IProps) => {
     {
       field: 'content',
       headerName: '内容',
-      width: 430,
+      width: 400,
+      disableColumnMenu: true,
+    },
+    {
+      field: 'sentimentResult',
+      headerName: '感情',
+      width: 100,
       disableColumnMenu: true,
     },
   ]
   return (
     <div className={style.dialyList__dataGrid}>
       <DataGrid
-        rows={props.data.result}
+        rows={props.dialyList}
         columns={columns}
         pageSize={5}
-        loading={props.data.result.length === 0}
+        loading={props.dialyList.length === 0}
         onRowClick={row => router.push(`/${row.id}`)}
         autoHeight={true}
         columnBuffer={0}
