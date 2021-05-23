@@ -8,18 +8,18 @@ export type DialyType = {
   mixedSentiment: number
   isDeleted: boolean
   sentimentResult?: 'positive' | 'negative' | 'nutral'
-  //   created_at: string
-  //   updated_at: string
-}
-export type confirmType = {
-  value: number
-  detail: string
+  created_at: string
+  updated_at: string
 }
 
 export type DialyListType = DialyType[]
 
 export interface IProps {
   dialyList: DialyListType
+}
+export interface ISnackbarProps {
+  open: boolean
+  message: string
 }
 
 export interface IDialyInputEvent extends React.FormEvent<HTMLInputElement> {

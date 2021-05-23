@@ -1,11 +1,38 @@
-import { IProps } from '@/types/type'
-import { DataGrid, GridColDef } from '@material-ui/data-grid'
+import { selectDialy } from '@/dev/Actions'
+import { DialyType, IProps } from '@/types/type'
+import {
+  DataGrid,
+  GridColDef,
+  GridRowData,
+  GridSortDirection,
+} from '@material-ui/data-grid'
 import router from 'next/router'
 import React from 'react'
+import { useDispatch } from 'react-redux'
 // eslint-disable-next-line no-restricted-imports
 import style from '../styles/_dialy_list.module.scss'
 
 const DialyList: React.FC<IProps> = (props: IProps) => {
+  const dispatch = useDispatch()
+
+  const handleRowSelected = (gridRowData: GridRowData) => {
+    const rowsData = gridRowData as DialyType
+    const selectedDialy: DialyType = {
+      id: rowsData.id,
+      title: rowsData.title,
+      content: rowsData.content,
+      positiveSentiment: rowsData.positiveSentiment,
+      negativeSentiment: rowsData.negativeSentiment,
+      nutralSentiment: rowsData.nutralSentiment,
+      mixedSentiment: rowsData.mixedSentiment,
+      isDeleted: rowsData.isDeleted,
+      created_at: rowsData.created_at,
+      updated_at: rowsData.updated_at,
+    }
+    dispatch(selectDialy(selectedDialy))
+    router.push(`/${rowsData.id}`)
+    return
+  }
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'No', width: 75, disableColumnMenu: true },
     {
@@ -34,10 +61,17 @@ const DialyList: React.FC<IProps> = (props: IProps) => {
         columns={columns}
         pageSize={5}
         loading={props.dialyList.length === 0}
-        onRowClick={row => router.push(`/${row.id}`)}
+        onRowClick={gridRowParams => handleRowSelected(gridRowParams.row)}
         autoHeight={true}
         columnBuffer={0}
         hideFooterRowCount
+        sortingOrder={['asc', 'desc']}
+        sortModel={[
+          {
+            field: 'id',
+            sort: 'desc' as GridSortDirection,
+          },
+        ]}
       />
     </div>
   )

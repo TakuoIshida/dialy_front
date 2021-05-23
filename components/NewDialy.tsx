@@ -1,6 +1,8 @@
 import BackToTop from '@/components/BackToTop'
-import { PutApiResponse, DialyType, ComprehendResponse } from '@/types/type'
-import { comprehendApiReq, postDialy } from '@/utils/functions'
+import SnackBar from '@/components/SnackBar'
+import { initDialy } from '@/dev/Reducers'
+import { DialyType } from '@/types/type'
+import { checkInput, reqDialy } from '@/utils/functions'
 import {
   Button,
   Checkbox,
@@ -12,17 +14,8 @@ import React, { useState } from 'react'
 import style from '../styles/_dialy_form.module.scss'
 
 const NewTodo = () => {
-  const initialNewDialy: DialyType = {
-    id: '',
-    title: '',
-    content: '',
-    positiveSentiment: 0,
-    negativeSentiment: 0,
-    nutralSentiment: 0,
-    mixedSentiment: 0,
-    isDeleted: false,
-  }
-  const [newDialy, setNewDialy] = useState(initialNewDialy)
+  const [newDialy, setNewDialy] = useState(initDialy)
+  const [open, setOpen] = useState(false)
 
   const handleTitleChange = (value: string) => {
     setNewDialy({ ...newDialy, ['title']: value })
@@ -35,34 +28,17 @@ const NewTodo = () => {
     setNewDialy({ ...newDialy, ['isDeleted']: checked })
   }
 
-  const putTodo = async (newDialy: DialyType) => {
-    if (newDialy.content === '' || newDialy.title === '') {
-      alert('入力がありません')
-      return
-    }
-    try {
-      const res: ComprehendResponse = await comprehendApiReq(newDialy.content)
-      console.log(res)
-      // POSTする前にComprehendを入れてレスポンスの点数を受け取る
-      // ４パターンに分けた結果をnewDialyに追加する
-      newDialy.mixedSentiment = res.sentimentScore.Mixed
-      newDialy.negativeSentiment = res.sentimentScore.Negative
-      newDialy.nutralSentiment = res.sentimentScore.Neutral
-      newDialy.positiveSentiment = res.sentimentScore.Positive
-      const data: PutApiResponse = await postDialy(
-        process.env.NEXT_PUBLIC_BASE_API + '/dialy',
-        newDialy,
-      )
-      console.log(data)
-      setNewDialy(initialNewDialy)
-    } catch (e) {
-      console.log(e)
-      alert('登録に失敗しました。')
-      return
-    }
+  const putDialy = async (newDialy: DialyType) => {
+    checkInput(newDialy)
+    await reqDialy(newDialy)
+    setOpen(true)
+    setTimeout(() => {
+      setOpen(false)
+    }, 1500)
   }
   return (
     <div>
+      <SnackBar open={open} message="登録しました。" />
       <div className={style.dialyForm}>
         <TextField
           className={style.dialyForm__title}
@@ -93,7 +69,7 @@ const NewTodo = () => {
         />
         <div>
           <Button
-            onClick={() => putTodo(newDialy)}
+            onClick={() => putDialy(newDialy)}
             className={style.dialyForm__put}
             variant="contained"
             color="primary">

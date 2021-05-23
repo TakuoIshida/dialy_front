@@ -1,9 +1,11 @@
 import DialyList from '@/components/DialyList'
+import { initdialyList } from '@/dev/Actions'
 import { GetApiResponse, IProps } from '@/types/type'
 import { getDialy, judgeOwnSentiment } from '@/utils/functions'
 import { Button, Divider } from '@material-ui/core'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 // eslint-disable-next-line no-restricted-imports
 import style from '../styles/_dialy_list.module.scss'
 // レンダリングするTopのコンポネントでAPIフェッチする必要がある
@@ -12,7 +14,6 @@ export async function getServerSideProps() {
   const data: GetApiResponse = await getDialy(
     process.env.NEXT_PUBLIC_BASE_API + '/dialy',
   )
-  // let dialyList = data.result
   const dialyList = judgeOwnSentiment(data.result)
   return {
     props: { dialyList },
@@ -20,7 +21,11 @@ export async function getServerSideProps() {
 }
 
 const TopPage: React.FC<IProps> = (props: IProps) => {
-  console.log(props.dialyList)
+  const dispatch = useDispatch()
+  const handleDailyList = () => dispatch(initdialyList(props.dialyList))
+  useEffect(() => {
+    handleDailyList()
+  }, [])
 
   return (
     <div>

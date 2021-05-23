@@ -1,7 +1,9 @@
 import {
+  ComprehendResponse,
   DialyListType,
   DialyType,
   GetApiResponse,
+  // eslint-disable-next-line prettier/prettier
   PutApiResponse
 } from '@/types/type'
 
@@ -68,4 +70,32 @@ export function judgeOwnSentiment(dialyList: DialyListType): DialyListType {
     dialyItem.sentimentResult = 'nutral'
   }
   return dialyList
+}
+export function checkInput(newDialy: DialyType): void {
+  if (newDialy.content === '' || newDialy.title === '') {
+    alert('未入力です')
+    return
+  }
+  return
+}
+
+export async function reqDialy(newDialy: DialyType): Promise<void> {
+  try {
+    const res: ComprehendResponse = await comprehendApiReq(newDialy.content)
+    // POSTする前にComprehendを入れてレスポンスの点数を受け取る
+    // ４パターンに分けた結果をnewDialyに追加する
+    newDialy.mixedSentiment = res.sentimentScore.Mixed
+    newDialy.negativeSentiment = res.sentimentScore.Negative
+    newDialy.nutralSentiment = res.sentimentScore.Neutral
+    newDialy.positiveSentiment = res.sentimentScore.Positive
+    const data: PutApiResponse = await postDialy(
+      process.env.NEXT_PUBLIC_BASE_API + '/dialy',
+      newDialy,
+    )
+    console.log(data)
+  } catch (e) {
+    console.log(e)
+    alert('登録に失敗しました。')
+    return
+  }
 }
