@@ -1,6 +1,11 @@
 import { selectDialy } from '@/dev/Actions'
 import { DialyType, IProps } from '@/types/type'
-import { DataGrid, GridColDef, GridRowData } from '@material-ui/data-grid'
+import {
+  DataGrid,
+  GridColDef,
+  GridRowData,
+  GridSortDirection,
+} from '@material-ui/data-grid'
 import router from 'next/router'
 import React from 'react'
 import { useDispatch } from 'react-redux'
@@ -60,6 +65,13 @@ const DialyList: React.FC<IProps> = (props: IProps) => {
         autoHeight={true}
         columnBuffer={0}
         hideFooterRowCount
+        sortingOrder={['asc', 'desc']}
+        sortModel={[
+          {
+            field: 'id',
+            sort: 'desc' as GridSortDirection,
+          },
+        ]}
       />
     </div>
   )
