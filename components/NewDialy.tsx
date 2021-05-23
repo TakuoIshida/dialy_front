@@ -1,5 +1,8 @@
 import BackToTop from '@/components/BackToTop'
 import SnackBar from '@/components/SnackBar'
+import { initDialy } from '@/dev/Reducers'
+import { DialyType } from '@/types/type'
+import { checkInput, reqDialy } from '@/utils/functions'
 import {
   Button,
   Checkbox,
@@ -11,17 +14,8 @@ import React, { useState } from 'react'
 import style from '../styles/_dialy_form.module.scss'
 
 const NewTodo = () => {
-  const initialNewDialy: DialyType = {
-    id: '',
-    title: '',
-    content: '',
-    positiveSentiment: 0,
-    negativeSentiment: 0,
-    nutralSentiment: 0,
-    mixedSentiment: 0,
-    isDeleted: false,
-  }
-  const [newDialy, setNewDialy] = useState(initialNewDialy)
+  const [newDialy, setNewDialy] = useState(initDialy)
+  const [open, setOpen] = useState(false)
 
   const handleTitleChange = (value: string) => {
     setNewDialy({ ...newDialy, ['title']: value })
@@ -34,6 +28,9 @@ const NewTodo = () => {
     setNewDialy({ ...newDialy, ['isDeleted']: checked })
   }
 
+  const putDialy = async (newDialy: DialyType) => {
+    checkInput(newDialy)
+    await reqDialy(newDialy)
     setOpen(true)
     setTimeout(() => {
       setOpen(false)
@@ -72,7 +69,7 @@ const NewTodo = () => {
         />
         <div>
           <Button
-            onClick={() => putTodo(newDialy)}
+            onClick={() => putDialy(newDialy)}
             className={style.dialyForm__put}
             variant="contained"
             color="primary">
