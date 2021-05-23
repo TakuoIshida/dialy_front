@@ -1,4 +1,5 @@
 import BackToTop from '@/components/BackToTop'
+import SnackBar from '@/components/SnackBar'
 import { DialyType } from '@/types/type'
 import {
   Button,
@@ -35,8 +36,12 @@ const EditTodo = () => {
   const handleIsDeleteChange = (checked: boolean) => {
     setEditState({ ...editState, ['isDeleted']: checked })
   }
-
+    setOpen(true)
+    setTimeout(() => {
+      setOpen(false)
+    }, 1500)
   return (
+      <SnackBar open={open} message="更新しました。" />
     <div className={style.dialyForm}>
       <TextField
         className={style.dialyForm__title}

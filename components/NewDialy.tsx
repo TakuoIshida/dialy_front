@@ -1,6 +1,5 @@
 import BackToTop from '@/components/BackToTop'
-import { PutApiResponse, DialyType, ComprehendResponse } from '@/types/type'
-import { comprehendApiReq, postDialy } from '@/utils/functions'
+import SnackBar from '@/components/SnackBar'
 import {
   Button,
   Checkbox,
@@ -35,34 +34,14 @@ const NewTodo = () => {
     setNewDialy({ ...newDialy, ['isDeleted']: checked })
   }
 
-  const putTodo = async (newDialy: DialyType) => {
-    if (newDialy.content === '' || newDialy.title === '') {
-      alert('入力がありません')
-      return
-    }
-    try {
-      const res: ComprehendResponse = await comprehendApiReq(newDialy.content)
-      console.log(res)
-      // POSTする前にComprehendを入れてレスポンスの点数を受け取る
-      // ４パターンに分けた結果をnewDialyに追加する
-      newDialy.mixedSentiment = res.sentimentScore.Mixed
-      newDialy.negativeSentiment = res.sentimentScore.Negative
-      newDialy.nutralSentiment = res.sentimentScore.Neutral
-      newDialy.positiveSentiment = res.sentimentScore.Positive
-      const data: PutApiResponse = await postDialy(
-        process.env.NEXT_PUBLIC_BASE_API + '/dialy',
-        newDialy,
-      )
-      console.log(data)
-      setNewDialy(initialNewDialy)
-    } catch (e) {
-      console.log(e)
-      alert('登録に失敗しました。')
-      return
-    }
+    setOpen(true)
+    setTimeout(() => {
+      setOpen(false)
+    }, 1500)
   }
   return (
     <div>
+      <SnackBar open={open} message="登録しました。" />
       <div className={style.dialyForm}>
         <TextField
           className={style.dialyForm__title}
